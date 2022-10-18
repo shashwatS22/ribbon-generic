@@ -1,0 +1,66 @@
+Gauge Address: 0xa8A9699161f266f7E79080ca0b65210820BE8732
+Name: Ribbon.fi ryvUSDC-ETH-P-THETA Gauge Deposit
+Symbol: ryvUSDC-ETH-P-THETA-gauge
+Decimals: 18
+LpToken: 0xCc323557c71C0D1D20a1861Dc69c06C5f3cC9624
+Total Supply: 16205207261314
+Working Supply: 6941101397592
+Inflastion Rate: 413359788359788359
+Reward Count: 0
+
+---------------------------------------------------------------------------------------
+Gauge Address: 0x98c371567b8A196518dcb4A4383387A2C7339382
+Name: Ribbon.fi rAAVE-THETA Gauge Deposit
+Symbol: rAAVE-THETA-gauge
+Decimals: 18
+LpToken: 0xe63151A0Ed4e5fafdc951D877102cf0977Abd365
+Total Supply: 35889802448389773991831
+Working Supply: 24563084554692046511861
+Inflastion Rate: 413359788359788359
+Reward Count: 0
+
+---------------------------------------------------------------------------------------
+Gauge Address: 0x4e079dCA26A4fE2586928c1319b20b1bf9f9be72
+Name: Ribbon.fi rstETH-THETA Gauge Deposit
+Symbol: rstETH-THETA-gauge
+Decimals: 18
+LpToken: 0x53773E034d9784153471813dacAFF53dBBB78E8c
+Total Supply: 6704779448550663730841
+Working Supply: 3229409223604899734287
+Inflastion Rate: 413359788359788359
+Reward Count: 0
+
+---------------------------------------------------------------------------------------
+Gauge Address: 0x9038403C3F7C6B5Ca361C82448DAa48780D7C8Bd
+Name: Ribbon.fi rETH-THETA Gauge Deposit
+Symbol: rETH-THETA-gauge
+Decimals: 18
+LpToken: 0x25751853Eab4D0eB3652B5eB6ecB102A2789644B
+Total Supply: 2768511833623323896054
+Working Supply: 1158267615815294583139
+Inflastion Rate: 413359788359788359
+Reward Count: 0
+
+---------------------------------------------------------------------------------------
+Gauge Address: 0x8913EAb16a302dE3E498BbA39940e7A55c0B9325
+Name: Ribbon.fi rBTC-THETA Gauge Deposit
+Symbol: rBTC-THETA-gauge
+Decimals: 18
+LpToken: 0x65a833afDc250D9d38f8CD9bC2B1E3132dB13B2F
+Total Supply: 24450728186
+Working Supply: 10100576395
+Inflastion Rate: 413359788359788359
+Reward Count: 0
+
+---------------------------------------------------------------------------------------
+Gauge Address: 0x4bA4Afa8071b0a9FE3097700cdadE02DD0e16fd0
+Name: Ribbon.fi rrETH-THETA Gauge Deposit
+Symbol: rrETH-THETA-gauge
+Decimals: 18
+LpToken: 0xA1Da0580FA96129E753D736a5901C31Df5eC5edf
+Total Supply: 784912955950256914920
+Working Supply: 316067941344684435308
+Inflastion Rate: 413359788359788359
+Reward Count: 0
+
+---------------------------------------------------------------------------------------
