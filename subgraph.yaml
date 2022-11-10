@@ -415,12 +415,192 @@ dataSources:
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
   - kind: ethereum/contract
-    name: YearnUSDCVault
+    name: RibbonYearnETHPutLiquidityGauge
     network: mainnet
     source:
-      address: "0x5f18C75AbDAe578b483E5F43f12a39cF75b973a9"
-      abi: yvHEGIC
-      startBlock: 13769714
+      address: "0xa8A9699161f266f7E79080ca0b65210820BE8732"
+      abi: LiquidityGaugeV5
+      startBlock: 14285441
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/gauge.ts
+      entities:
+        - Vault
+        - VaultTransaction
+        - VaultAccount
+      abis:
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: LiquidityGaugeV5
+          file: ./abis/LiquidityGaugeV5.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleStake
+        - event: Withdraw(indexed address,uint256)
+          handler: handleUnstake
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: RibbonAAVECoveredCallLiquidityGauge
+    network: mainnet
+    source:
+      address: "0x98c371567b8A196518dcb4A4383387A2C7339382"
+      abi: LiquidityGaugeV5
+      startBlock: 14285606
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/gauge.ts
+      entities:
+        - Vault
+        - VaultTransaction
+        - VaultAccount
+      abis:
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: LiquidityGaugeV5
+          file: ./abis/LiquidityGaugeV5.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleStake
+        - event: Withdraw(indexed address,uint256)
+          handler: handleUnstake
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: RibbonstETHCoveredCallLiquidityGauge
+    network: mainnet
+    source:
+      address: "0x4e079dCA26A4fE2586928c1319b20b1bf9f9be72"
+      abi: LiquidityGaugeV5
+      startBlock: 14285611
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/gauge.ts
+      entities:
+        - Vault
+        - VaultTransaction
+        - VaultAccount
+      abis:
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: LiquidityGaugeV5
+          file: ./abis/LiquidityGaugeV5.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleStake
+        - event: Withdraw(indexed address,uint256)
+          handler: handleUnstake
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: RibbonETHCoveredCallLiquidityGauge
+    network: mainnet
+    source:
+      address: "0x9038403C3F7C6B5Ca361C82448DAa48780D7C8Bd"
+      abi: LiquidityGaugeV5
+      startBlock: 14285617
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/gauge.ts
+      entities:
+        - Vault
+        - VaultTransaction
+        - VaultAccount
+      abis:
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: LiquidityGaugeV5
+          file: ./abis/LiquidityGaugeV5.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleStake
+        - event: Withdraw(indexed address,uint256)
+          handler: handleUnstake
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: RibbonWBTCCoveredCallLiquidityGauge
+    network: mainnet
+    source:
+      address: "0x8913EAb16a302dE3E498BbA39940e7A55c0B9325"
+      abi: LiquidityGaugeV5
+      startBlock: 14285622
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/gauge.ts
+      entities:
+        - Vault
+        - VaultTransaction
+        - VaultAccount
+      abis:
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: LiquidityGaugeV5
+          file: ./abis/LiquidityGaugeV5.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleStake
+        - event: Withdraw(indexed address,uint256)
+          handler: handleUnstake
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: RibbonRETHCoveredCallLiquidityGauge
+    network: mainnet
+    source:
+      address: "0x4bA4Afa8071b0a9FE3097700cdadE02DD0e16fd0"
+      abi: LiquidityGaugeV5
+      startBlock: 15310590
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/gauge.ts
+      entities:
+        - Vault
+        - VaultTransaction
+        - VaultAccount
+      abis:
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: LiquidityGaugeV5
+          file: ./abis/LiquidityGaugeV5.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256)
+          handler: handleStake
+        - event: Withdraw(indexed address,uint256)
+          handler: handleUnstake
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - kind: ethereum/contract
+    name: RibbonVaultPauser
+    network: mainnet
+    source:
+      address: "0xE04e8Ae290965AD4F7E40c68041c493d2e89cDC3"
+      abi: RibbonVaultPauser
+      startBlock: 14920856
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -428,13 +608,199 @@ dataSources:
       file: ./src/mappings/vault.ts
       entities:
         - Vault
+        - VaultTransaction
         - VaultAccount
-        - BalanceUpdate
       abis:
-        - name: yvHEGIC
-          file: ./abis/yvHEGIC.json
+        - name: RibbonVaultPauser
+          file: ./abis/RibbonVaultPauser.json
         - name: RibbonThetaVaultWithSwap
           file: ./abis/RibbonThetaVaultWithSwap.json
       eventHandlers:
-        - event: StrategyReported(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleStrategyReported
+        - event: Pause(indexed address,indexed address,uint256,uint256)
+          handler: handlePause
+        - event: Resume(indexed address,indexed address,uint256)
+          handler: handleResume
+  - kind: ethereum/contract
+    name: RibbonTreasuryVaultPERP
+    network: mainnet
+    source:
+      address: "0xe44eDF7aD1D434Afe3397687DD0A914674F2E405"
+      abi: RibbonTreasuryVault
+      startBlock: 14125579
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+        - VaultPerformanceUpdate
+      abis:
+        - name: RibbonTreasuryVault
+          file: ./abis/RibbonTreasuryVault.json
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+        - name: OptionsPremiumPricer
+          file: ./abis/OptionsPremiumPricer.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,indexed address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,indexed address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: InitiateWithdraw(indexed address,uint256,uint256)
+          handler: handleInitiateWithdraw
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: InstantWithdraw(indexed address,uint256,uint256)
+          handler: handleInstantWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
+          handler: handleInitiateGnosisAuction
+        - event: DistributePremium(uint256,uint256[],address[],uint256)
+          handler: handleDistributePremium
+  - kind: ethereum/contract
+    name: RibbonTreasuryVaultBAL
+    network: mainnet
+    source:
+      address: "0x2a6B048eB15C7d4ddCa27db4f9A454196898A0Fe"
+      abi: RibbonTreasuryVault
+      startBlock: 15038080
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+        - VaultPerformanceUpdate
+      abis:
+        - name: RibbonTreasuryVault
+          file: ./abis/RibbonTreasuryVault.json
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+        - name: OptionsPremiumPricer
+          file: ./abis/OptionsPremiumPricer.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,indexed address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,indexed address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: InitiateWithdraw(indexed address,uint256,uint256)
+          handler: handleInitiateWithdraw
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: InstantWithdraw(indexed address,uint256,uint256)
+          handler: handleInstantWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
+          handler: handleInitiateGnosisAuction
+        - event: DistributePremium(uint256,uint256[],address[],uint256)
+          handler: handleDistributePremium
+  - kind: ethereum/contract
+    name: RibbonTreasuryVaultBADGER
+    network: mainnet
+    source:
+      address: "0x270F4a26a3fE5766CcEF9608718491bb057Be238"
+      abi: RibbonTreasuryVault
+      startBlock: 15034009
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+        - VaultPerformanceUpdate
+      abis:
+        - name: RibbonTreasuryVault
+          file: ./abis/RibbonTreasuryVault.json
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+        - name: OptionsPremiumPricer
+          file: ./abis/OptionsPremiumPricer.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,indexed address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,indexed address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: InitiateWithdraw(indexed address,uint256,uint256)
+          handler: handleInitiateWithdraw
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: InstantWithdraw(indexed address,uint256,uint256)
+          handler: handleInstantWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
+          handler: handleInitiateGnosisAuction
+        - event: DistributePremium(uint256,uint256[],address[],uint256)
+          handler: handleDistributePremium
+  - kind: ethereum/contract
+    name: RibbonTreasuryVaultSPELL
+    network: mainnet
+    source:
+      address: "0x42cf874bBe5564EfCF252bC90829551f4ec639DC"
+      abi: RibbonTreasuryVault
+      startBlock: 15164332
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vault.ts
+      entities:
+        - Vault
+        - VaultShortPosition
+        - VaultAccount
+        - BalanceUpdate
+        - VaultPerformanceUpdate
+      abis:
+        - name: RibbonTreasuryVault
+          file: ./abis/RibbonTreasuryVault.json
+        - name: RibbonThetaVaultWithSwap
+          file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: Otoken
+          file: ./abis/Otoken.json
+        - name: OptionsPremiumPricer
+          file: ./abis/OptionsPremiumPricer.json
+      eventHandlers:
+        - event: OpenShort(indexed address,uint256,indexed address)
+          handler: handleOpenShort
+        - event: CloseShort(indexed address,uint256,indexed address)
+          handler: handleCloseShort
+        - event: Deposit(indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: InitiateWithdraw(indexed address,uint256,uint256)
+          handler: handleInitiateWithdraw
+        - event: Withdraw(indexed address,uint256,uint256)
+          handler: handleWithdraw
+        - event: InstantWithdraw(indexed address,uint256,uint256)
+          handler: handleInstantWithdraw
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
+          handler: handleInitiateGnosisAuction
+        - event: DistributePremium(uint256,uint256[],address[],uint256)
+          handler: handleDistributePremium

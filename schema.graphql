@@ -440,3 +440,55 @@ type ActiveAccount @entity {
   " { daily/hourly }-{ Address of the account }-{ Days/hours since Unix epoch } "
   id: ID!
 }
+
+type _Vault @entity{
+  " Smart Contract Address of the vault "
+  id: ID!
+
+  name: String!
+
+  symbol: String!
+
+  round: Int!
+  
+  " Total balance of the locked underlying asset in the pool including the one in short position (totalBalance in case of ribbon) "
+  totalValueLocked: BigInt!
+
+  totalValueLockedUSD: BigDecimal!
+
+  currentOption: String!
+
+  isPut: Boolean!
+  
+  currentOptionAuctionId: Int!
+
+  liquidityGauge: String!
+
+  managementFeesCollected: BigDecimal!
+
+  performanceFeeCollected:BigDecimal!
+
+  decimals: Int!
+
+  auctionsPremiumPricer: String!
+
+  options: [String!]
+
+  oTokenFactory: String!
+
+  marginPool: String!
+
+  gammaController: String!
+
+  totalNotionalVolume: BigDecimal
+
+}
+
+type _Auction @entity{
+  
+  id: ID!
+
+  optionToken: String!
+
+  biddingToken: String!
+}

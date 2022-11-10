@@ -1,0 +1,159 @@
+1 DELAY
+Name : DELAY  Type: uint256
+----------------------------------------------------------
+2 GAMMA_CONTROLLER
+Name : GAMMA_CONTROLLER  Type: address
+----------------------------------------------------------
+3 MARGIN_POOL
+Name : MARGIN_POOL  Type: address
+----------------------------------------------------------
+4 OTOKEN_FACTORY
+Name : OTOKEN_FACTORY  Type: address
+----------------------------------------------------------
+5 PERIOD
+Name : PERIOD  Type: uint256
+----------------------------------------------------------
+6 SWAP_CONTRACT
+Name : SWAP_CONTRACT  Type: address
+----------------------------------------------------------
+7 USDC
+Name : USDC  Type: address
+----------------------------------------------------------
+8 WETH
+Name : WETH  Type: address
+----------------------------------------------------------
+9 accountVaultBalance
+Name : accountVaultBalance  Type: uint256
+----------------------------------------------------------
+10 allowance
+Name : allowance  Type: uint256
+----------------------------------------------------------
+11 auctionDuration
+Name : auctionDuration  Type: uint256
+----------------------------------------------------------
+12 balanceOf
+Name : balanceOf  Type: uint256
+----------------------------------------------------------
+13 cap
+Name : cap  Type: uint256
+----------------------------------------------------------
+14 currentOption
+Name : currentOption  Type: address
+----------------------------------------------------------
+15 currentOtokenPremium
+Name : currentOtokenPremium  Type: uint256
+----------------------------------------------------------
+16 currentQueuedWithdrawShares
+Name : currentQueuedWithdrawShares  Type: uint256
+----------------------------------------------------------
+17 decimals
+Name : decimals  Type: uint8
+----------------------------------------------------------
+18 depositReceipts
+Name : round  Type: uint16
+Name : amount  Type: uint104
+Name : unredeemedShares  Type: uint128
+----------------------------------------------------------
+19 feeRecipient
+Name : feeRecipient  Type: address
+----------------------------------------------------------
+20 keeper
+Name : keeper  Type: address
+----------------------------------------------------------
+21 lastQueuedWithdrawAmount
+Name : lastQueuedWithdrawAmount  Type: uint256
+----------------------------------------------------------
+22 lastStrikeOverrideRound
+Name : lastStrikeOverrideRound  Type: uint16
+----------------------------------------------------------
+23 liquidityGauge
+Name : liquidityGauge  Type: address
+----------------------------------------------------------
+24 managementFee
+Name : managementFee  Type: uint256
+----------------------------------------------------------
+25 name
+Name : name  Type: string
+----------------------------------------------------------
+26 nextOption
+Name : nextOption  Type: address
+----------------------------------------------------------
+27 nextOptionReadyAt
+Name : nextOptionReadyAt  Type: uint256
+----------------------------------------------------------
+28 optionAuctionID
+Name : optionAuctionID  Type: uint256
+----------------------------------------------------------
+29 optionState
+Name : nextOption  Type: address
+Name : currentOption  Type: address
+Name : nextOptionReadyAt  Type: uint32
+----------------------------------------------------------
+30 optionsPremiumPricer
+Name : optionsPremiumPricer  Type: address
+----------------------------------------------------------
+31 optionsPurchaseQueue
+Name : optionsPurchaseQueue  Type: address
+----------------------------------------------------------
+32 overriddenStrikePrice
+Name : overriddenStrikePrice  Type: uint256
+----------------------------------------------------------
+33 owner
+Name : owner  Type: address
+----------------------------------------------------------
+34 performanceFee
+Name : performanceFee  Type: uint256
+----------------------------------------------------------
+35 premiumDiscount
+Name : premiumDiscount  Type: uint256
+----------------------------------------------------------
+36 pricePerShare
+Name : pricePerShare  Type: uint256
+----------------------------------------------------------
+37 roundPricePerShare
+Name : roundPricePerShare  Type: uint256
+----------------------------------------------------------
+38 shareBalances
+Name : heldByAccount  Type: uint256
+Name : heldByVault  Type: uint256
+----------------------------------------------------------
+39 shares
+Name : shares  Type: uint256
+----------------------------------------------------------
+40 strikeSelection
+Name : strikeSelection  Type: address
+----------------------------------------------------------
+41 symbol
+Name : symbol  Type: string
+----------------------------------------------------------
+42 totalBalance
+Name : totalBalance  Type: uint256
+----------------------------------------------------------
+43 totalPending
+Name : totalPending  Type: uint256
+----------------------------------------------------------
+44 totalSupply
+Name : totalSupply  Type: uint256
+----------------------------------------------------------
+45 vaultParams
+Name : isPut  Type: bool
+Name : decimals  Type: uint8
+Name : asset  Type: address
+Name : underlying  Type: address
+Name : minimumSupply  Type: uint56
+Name : cap  Type: uint104
+----------------------------------------------------------
+46 vaultPauser
+Name : vaultPauser  Type: address
+----------------------------------------------------------
+47 vaultState
+Name : round  Type: uint16
+Name : lockedAmount  Type: uint104
+Name : lastLockedAmount  Type: uint104
+Name : totalPending  Type: uint128
+Name : queuedWithdrawShares  Type: uint128
+----------------------------------------------------------
+48 withdrawals
+Name : round  Type: uint16
+Name : shares  Type: uint128
+----------------------------------------------------------

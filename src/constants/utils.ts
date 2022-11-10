@@ -256,26 +256,6 @@ export function updateProtocolTotalValueLockedUSD(): void {
   protocol.save();
 }
 
-export function getPoolTVL(
-  inputTokens: string[],
-  inputTokenBalances: BigInt[],
-  block: ethereum.Block
-): BigDecimal {
-  let totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
-
-  for (let i = 0; i < inputTokens.length; i++) {
-    let inputToken = utils.getOrCreateTokenFromString(inputTokens[i], block);
-    totalValueLockedUSD = totalValueLockedUSD.plus(
-      inputTokenBalances[i]
-        .divDecimal(
-          constants.BIGINT_TEN.pow(inputToken.decimals as u8).toBigDecimal()
-        )
-        .times(inputToken.lastPriceUSD!)
-    );
-  }
-
-  return totalValueLockedUSD;
-}
 
 export function getTokenDecimals(tokenAddr: Address): BigDecimal {
   const token = ERC20Contract.bind(tokenAddr);
@@ -288,12 +268,6 @@ export function getTokenDecimals(tokenAddr: Address): BigDecimal {
   return constants.BIGINT_TEN.pow(decimals as u8).toBigDecimal();
 }
 
-export function getOrCreateTokenFromString(
-  tokenAddress: string,
-  block: ethereum.Block
-): Token {
-  return getOrCreateToken(Address.fromString(tokenAddress), block);
-}
 
 export function getOutputTokenPriceUSD(
   poolAddress: Address,
@@ -326,47 +300,4 @@ export function calculateAverage(prices: BigDecimal[]): BigDecimal {
 }
 
 
-
-export function getOutputTokenPriceUSD2(
-  poolAddress: Address,
-  block: ethereum.Block
-): BigDecimal {
-  let virtualPrice = getVirtualPriceFromPool(poolAddress);
-  let pool = getOrCreateLiquidityPool(poolAddress, block);
-
-  let coins = pool.inputTokens;
-  let bestTokenPriceUSD = constants.BIGDECIMAL_ZERO;
-  let tokenName = "";
-  let underlyingCoins = pool._underlyingTokens;
-  for (let i = 0; i < coins.length; i++) {
-    let token = getOrCreateToken(Address.fromString(coins[i]), block);
-    if (token.lastPriceUSD!.gt(constants.BIGDECIMAL_ZERO)) {
-      bestTokenPriceUSD = token.lastPriceUSD!;
-      tokenName = token.name;
-      break;
-    }
-  }
-  if (bestTokenPriceUSD.le(constants.BIGDECIMAL_ZERO)) {
-    if (underlyingCoins!.length > 0) {
-      for (let i = 0; i < underlyingCoins!.length; i++) {
-        let token = getOrCreateToken(
-          Address.fromString(underlyingCoins![i]),
-          block
-        );
-        if (token.lastPriceUSD!.gt(constants.BIGDECIMAL_ZERO)) {
-          bestTokenPriceUSD = token.lastPriceUSD!;
-          tokenName = token.name;
-          break;
-        }
-      }
-    }
-  }
-
-  let outputToken = getOrCreateTokenFromString(pool.outputToken!, block);
-
-  outputToken.lastPriceUSD = bestTokenPriceUSD.times(virtualPrice);
-  outputToken.save();
-
-  return bestTokenPriceUSD.times(virtualPrice);
-}
 

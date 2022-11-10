@@ -1,0 +1,84 @@
+Approval
+Name: owner Type: address
+Name: spender Type: address
+Name: value Type: uint256
+----------------------------------------------------------
+AuctionDurationSet
+Name: auctionDuration Type: uint256
+Name: newAuctionDuration Type: uint256
+----------------------------------------------------------
+CapSet
+Name: oldCap Type: uint256
+Name: newCap Type: uint256
+----------------------------------------------------------
+CloseShort
+Name: options Type: address
+Name: withdrawAmount Type: uint256
+Name: manager Type: address
+----------------------------------------------------------
+CollectVaultFees
+Name: performanceFee Type: uint256
+Name: vaultFee Type: uint256
+Name: round Type: uint256
+Name: feeRecipient Type: address
+----------------------------------------------------------
+Deposit
+Name: account Type: address
+Name: amount Type: uint256
+Name: round Type: uint256
+----------------------------------------------------------
+InitiateWithdraw
+Name: account Type: address
+Name: shares Type: uint256
+Name: round Type: uint256
+----------------------------------------------------------
+InstantWithdraw
+Name: account Type: address
+Name: amount Type: uint256
+Name: round Type: uint256
+----------------------------------------------------------
+ManagementFeeSet
+Name: managementFee Type: uint256
+Name: newManagementFee Type: uint256
+----------------------------------------------------------
+NewOffer
+Name: swapId Type: uint256
+Name: seller Type: address
+Name: oToken Type: address
+Name: biddingToken Type: address
+Name: minPrice Type: uint256
+Name: minBidSize Type: uint256
+Name: totalSize Type: uint256
+----------------------------------------------------------
+NewOptionStrikeSelected
+Name: strikePrice Type: uint256
+Name: delta Type: uint256
+----------------------------------------------------------
+OpenShort
+Name: options Type: address
+Name: depositAmount Type: uint256
+Name: manager Type: address
+----------------------------------------------------------
+OwnershipTransferred
+Name: previousOwner Type: address
+Name: newOwner Type: address
+----------------------------------------------------------
+PerformanceFeeSet
+Name: performanceFee Type: uint256
+Name: newPerformanceFee Type: uint256
+----------------------------------------------------------
+Redeem
+Name: account Type: address
+Name: share Type: uint256
+Name: round Type: uint256
+----------------------------------------------------------
+Transfer
+Name: from Type: address
+Name: to Type: address
+Name: value Type: uint256
+----------------------------------------------------------
+Withdraw
+Name: account Type: address
+Name: amount Type: uint256
+Name: shares Type: uint256
+----------------------------------------------------------

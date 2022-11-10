@@ -1079,7 +1079,7 @@
         ],
         "internalType": "struct ISwap.Bid[]",
         "name": "bids",
-        "type": "tuple[]"
+        "type": "tuple[]" 
       }
     ],
     "name": "settleOffer",

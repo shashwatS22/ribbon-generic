@@ -1,7 +1,9 @@
 import { Address, ethereum,BigInt } from "@graphprotocol/graph-ts";
 
+
 import { FinancialsDailySnapshot, Protocol, Token, UsageMetricsDailySnapshot, UsageMetricsHourlySnapshot } from "../../generated/schema"
 import { getUsdPricePerToken } from "../prices";
+import ERC20 
 import * as constants from "./constants";
 import * as utils from "./utils";
 
@@ -52,6 +54,9 @@ export function getOrCreateToken(
   return token;
 }
 
+export function getOrCreateRewardToken(){}
+
+
 export function getOrCreateProtocol(): Protocol {
   let protocol = Protocol.load("");
   if (!protocol)
@@ -77,6 +82,7 @@ export function getOrCreateProtocol(): Protocol {
   }
   return protocol;
 }
+
 export function getOrCreateFinancialDailySnapshots(
   block: ethereum.Block
 ): FinancialsDailySnapshot {
@@ -158,3 +164,11 @@ export function getOrCreateUsageMetricsHourlySnapshot(
 
   return usageMetrics;
 }
+
+
+export function getOrCreatePool(){}
+export function getOrCreatePoolDailySnapshot(){}
+export function getOrCreatePoolHourlySnapshot(){}
+
+export function getOrCreateVault(){}
+export function getOrCreateAuction(){}
