@@ -168,9 +168,7 @@ export const ETH_NAME = "ETH";
 /////////////////////////////
 
 export const FEE_DENOMINATOR_DECIMALS = 10;
-export const FACTORY_ADDRESS = Address.fromString(
-  "0xf65BEd27e96a367c61e0E06C54e14B16b84a5870"
-);
+
 export const PANCAKE_FACTORY_ADDRESS = Address.fromString(
   "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"
 );
@@ -192,43 +190,16 @@ export const EPS_ADDRESS = Address.fromString(
 export const EPX_ADDRESS = Address.fromString(
   "0xaf41054c1487b0e5e2b9250c0332ecbce6ce9d71"
 );
-export const REGISTRY_ADDRESS = Address.fromString(
-  "0x266Bb386252347b03C7B6eB37F950f476D7c3E63"
-);
-export const STAKING_V1 = "0xcce949De564fE60e7f96C85e55177F8B9E4CF61b";
-export const STAKING_V2 = "0x5B74C99AA2356B4eAa7B85dC486843eDff8Dfdbe";
+
 
 export const TRICRYPTO_LP_TOKEN = Address.fromString(
   "0xaF4dE8E872131AE328Ce21D909C74705d3Aaf452"
 );
 
-export const POOL_LP_TOKEN_MAP = new Map<string, Address>();
-POOL_LP_TOKEN_MAP.set(
-  "0x160CAed03795365F3A589f10C379FfA7d75d4E76".toLowerCase(),
-  Address.fromString("0xaF4dE8E872131AE328Ce21D909C74705d3Aaf452")
-);
-POOL_LP_TOKEN_MAP.set(
-  "0x2477fB288c5b4118315714ad3c7Fd7CC69b00bf9".toLowerCase(),
-  Address.fromString("0x2a435Ecb3fcC0E316492Dc1cdd62d0F189be5640")
-);
-POOL_LP_TOKEN_MAP.set(
-  "0x19EC9e3F7B21dd27598E7ad5aAe7dC0Db00A806d".toLowerCase(),
-  Address.fromString("0x5b5bD8913D766D005859CE002533D4838B0Ebbb5")
-);
-POOL_LP_TOKEN_MAP.set(
-  "0xfA715E7C8fA704Cf425Dd7769f4a77b81420fbF2".toLowerCase(),
-  Address.fromString("0xdC7f3E34C43f8700B0EB58890aDd03AA84F7B0e1")
-);
 
-export const BASE_POOL_MAP = new Map<Address, Address>();
-BASE_POOL_MAP.set(
-  Address.fromString(
-    "0x5A7d2F9595eA00938F3B5BA1f97a85274f20b96c".toLowerCase()
-  ),
-  Address.fromString("0x160CAed03795365F3A589f10C379FfA7d75d4E76")
-);
 
-export const ELLIPSIS_PLATFORM_ID = "ellipsis";
+
+export const RIBBON_PLATFORM_ID = "ribbon";
 
 export const POOL_FEE = BigDecimal.fromString("0.0004");
 export const ADMIN_FEE = BigDecimal.fromString("0.5");
@@ -240,14 +211,6 @@ export namespace PoolType {
   export const BASEPOOL = "BASEPOOL";
 }
 
-export const EARLY_BASEPOOLS: Address[] = [
-  Address.fromString(
-    "0x160CAed03795365F3A589f10C379FfA7d75d4E76".toLowerCase()
-  ),
-  Address.fromString(
-    "0x2477fB288c5b4118315714ad3c7Fd7CC69b00bf9".toLowerCase()
-  ),
-];
 
 export namespace RewardIntervalType {
   export const BLOCK = "BLOCK";
@@ -257,7 +220,7 @@ export namespace NULL {
   export const TYPE_STRING = "0x0000000000000000000000000000000000000000";
   export const TYPE_ADDRESS = Address.fromString(TYPE_STRING);
 }
-export const BSC_AVERAGE_BLOCK_PER_HOUR = BigInt.fromString("92000");
+export const ETH_AVERAGE_BLOCK_PER_HOUR = BigInt.fromString("92000");
 
 export const BIGINT_TEN = BigInt.fromI32(10);
 
@@ -276,3 +239,4 @@ export const DEFAULT_ADMIN_FEE = BigInt.fromString("5000000000");
 export const MARGIN_POOL = Address.fromString(
   "0x5934807cC0654d46755eBd2848840b616256C6Ef"
 );
+export const ETH_CALL_V2_CONTRACT = Address.fromString("0x25751853Eab4D0eB3652B5eB6ecB102A2789644B");

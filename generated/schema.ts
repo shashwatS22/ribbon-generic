@@ -19,6 +19,7 @@ export class Token extends Entity {
     this.set("name", Value.fromString(""));
     this.set("symbol", Value.fromString(""));
     this.set("decimals", Value.fromI32(0));
+    this.set("_isOtoken", Value.fromBoolean(false));
   }
 
   save(): void {
@@ -105,6 +106,15 @@ export class Token extends Entity {
     } else {
       this.set("lastPriceBlockNumber", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get _isOtoken(): boolean {
+    let value = this.get("_isOtoken");
+    return value!.toBoolean();
+  }
+
+  set _isOtoken(value: boolean) {
+    this.set("_isOtoken", Value.fromBoolean(value));
   }
 }
 
@@ -1075,6 +1085,23 @@ export class Pool extends Entity {
   set hourlySnapshots(value: Array<string>) {
     this.set("hourlySnapshots", Value.fromStringArray(value));
   }
+
+  get _vault(): string | null {
+    let value = this.get("_vault");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set _vault(value: string | null) {
+    if (!value) {
+      this.unset("_vault");
+    } else {
+      this.set("_vault", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class PoolDailySnapshot extends Entity {
@@ -1670,12 +1697,11 @@ export class _Vault extends Entity {
 
     this.set("name", Value.fromString(""));
     this.set("symbol", Value.fromString(""));
-    this.set("round", Value.fromI32(0));
-    this.set("totalValueLocked", Value.fromBigInt(BigInt.zero()));
+    this.set("totalValueLocked", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("totalValueLockedUSD", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("currentOption", Value.fromString(""));
     this.set("isPut", Value.fromBoolean(false));
-    this.set("currentOptionAuctionId", Value.fromI32(0));
+    this.set("currentOptionAuctionId", Value.fromBigInt(BigInt.zero()));
     this.set("liquidityGauge", Value.fromString(""));
     this.set(
       "managementFeesCollected",
@@ -1685,8 +1711,9 @@ export class _Vault extends Entity {
       "performanceFeeCollected",
       Value.fromBigDecimal(BigDecimal.zero())
     );
+    this.set("totalFeeCollected", Value.fromBigDecimal(BigDecimal.zero()));
     this.set("decimals", Value.fromI32(0));
-    this.set("auctionsPremiumPricer", Value.fromString(""));
+    this.set("optionsPremiumPricer", Value.fromString(""));
     this.set("oTokenFactory", Value.fromString(""));
     this.set("marginPool", Value.fromString(""));
     this.set("gammaController", Value.fromString(""));
@@ -1735,22 +1762,13 @@ export class _Vault extends Entity {
     this.set("symbol", Value.fromString(value));
   }
 
-  get round(): i32 {
-    let value = this.get("round");
-    return value!.toI32();
-  }
-
-  set round(value: i32) {
-    this.set("round", Value.fromI32(value));
-  }
-
-  get totalValueLocked(): BigInt {
+  get totalValueLocked(): BigDecimal {
     let value = this.get("totalValueLocked");
-    return value!.toBigInt();
+    return value!.toBigDecimal();
   }
 
-  set totalValueLocked(value: BigInt) {
-    this.set("totalValueLocked", Value.fromBigInt(value));
+  set totalValueLocked(value: BigDecimal) {
+    this.set("totalValueLocked", Value.fromBigDecimal(value));
   }
 
   get totalValueLockedUSD(): BigDecimal {
@@ -1780,13 +1798,13 @@ export class _Vault extends Entity {
     this.set("isPut", Value.fromBoolean(value));
   }
 
-  get currentOptionAuctionId(): i32 {
+  get currentOptionAuctionId(): BigInt {
     let value = this.get("currentOptionAuctionId");
-    return value!.toI32();
+    return value!.toBigInt();
   }
 
-  set currentOptionAuctionId(value: i32) {
-    this.set("currentOptionAuctionId", Value.fromI32(value));
+  set currentOptionAuctionId(value: BigInt) {
+    this.set("currentOptionAuctionId", Value.fromBigInt(value));
   }
 
   get liquidityGauge(): string {
@@ -1816,6 +1834,15 @@ export class _Vault extends Entity {
     this.set("performanceFeeCollected", Value.fromBigDecimal(value));
   }
 
+  get totalFeeCollected(): BigDecimal {
+    let value = this.get("totalFeeCollected");
+    return value!.toBigDecimal();
+  }
+
+  set totalFeeCollected(value: BigDecimal) {
+    this.set("totalFeeCollected", Value.fromBigDecimal(value));
+  }
+
   get decimals(): i32 {
     let value = this.get("decimals");
     return value!.toI32();
@@ -1825,13 +1852,13 @@ export class _Vault extends Entity {
     this.set("decimals", Value.fromI32(value));
   }
 
-  get auctionsPremiumPricer(): string {
-    let value = this.get("auctionsPremiumPricer");
+  get optionsPremiumPricer(): string {
+    let value = this.get("optionsPremiumPricer");
     return value!.toString();
   }
 
-  set auctionsPremiumPricer(value: string) {
-    this.set("auctionsPremiumPricer", Value.fromString(value));
+  set optionsPremiumPricer(value: string) {
+    this.set("optionsPremiumPricer", Value.fromString(value));
   }
 
   get options(): Array<string> | null {
@@ -1877,23 +1904,6 @@ export class _Vault extends Entity {
   set gammaController(value: string) {
     this.set("gammaController", Value.fromString(value));
   }
-
-  get totalNotionalVolume(): BigDecimal | null {
-    let value = this.get("totalNotionalVolume");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigDecimal();
-    }
-  }
-
-  set totalNotionalVolume(value: BigDecimal | null) {
-    if (!value) {
-      this.unset("totalNotionalVolume");
-    } else {
-      this.set("totalNotionalVolume", Value.fromBigDecimal(<BigDecimal>value));
-    }
-  }
 }
 
 export class _Auction extends Entity {
@@ -1903,6 +1913,7 @@ export class _Auction extends Entity {
 
     this.set("optionToken", Value.fromString(""));
     this.set("biddingToken", Value.fromString(""));
+    this.set("vault", Value.fromString(""));
   }
 
   save(): void {
@@ -1946,5 +1957,14 @@ export class _Auction extends Entity {
 
   set biddingToken(value: string) {
     this.set("biddingToken", Value.fromString(value));
+  }
+
+  get vault(): string {
+    let value = this.get("vault");
+    return value!.toString();
+  }
+
+  set vault(value: string) {
+    this.set("vault", Value.fromString(value));
   }
 }

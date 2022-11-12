@@ -28,6 +28,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -75,6 +77,8 @@ dataSources:
           file: ./abis/OptionsPremiumPricer.json
         - name: SwapContract
           file: ./abis/SwapContract.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -120,6 +124,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -165,6 +171,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -210,6 +218,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -255,6 +265,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -328,6 +340,8 @@ dataSources:
           file: ./abis/RibbonThetaVaultWithSwap.json
         - name: SwapContract
           file: ./abis/SwapContract.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: SettleOffer(uint256)
           handler: handleSettleOffer
@@ -362,6 +376,8 @@ dataSources:
           file: ./abis/RibbonThetaVaultWithSwap.json
         - name: SwapContract
           file: ./abis/SwapContract.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: SettleOffer(uint256)
           handler: handleSettleOffer
@@ -395,6 +411,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -437,6 +455,8 @@ dataSources:
           file: ./abis/LiquidityGaugeV5.json
         - name: RibbonVaultPauser
           file: ./abis/RibbonVaultPauser.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Deposit(indexed address,uint256)
           handler: handleStake
@@ -467,6 +487,8 @@ dataSources:
           file: ./abis/LiquidityGaugeV5.json
         - name: RibbonVaultPauser
           file: ./abis/RibbonVaultPauser.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Deposit(indexed address,uint256)
           handler: handleStake
@@ -527,6 +549,8 @@ dataSources:
           file: ./abis/LiquidityGaugeV5.json
         - name: RibbonVaultPauser
           file: ./abis/RibbonVaultPauser.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Deposit(indexed address,uint256)
           handler: handleStake
@@ -557,6 +581,8 @@ dataSources:
           file: ./abis/LiquidityGaugeV5.json
         - name: RibbonVaultPauser
           file: ./abis/RibbonVaultPauser.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Deposit(indexed address,uint256)
           handler: handleStake
@@ -587,6 +613,8 @@ dataSources:
           file: ./abis/LiquidityGaugeV5.json
         - name: RibbonVaultPauser
           file: ./abis/RibbonVaultPauser.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Deposit(indexed address,uint256)
           handler: handleStake
@@ -615,6 +643,8 @@ dataSources:
           file: ./abis/RibbonVaultPauser.json
         - name: RibbonThetaVaultWithSwap
           file: ./abis/RibbonThetaVaultWithSwap.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: Pause(indexed address,indexed address,uint256,uint256)
           handler: handlePause
@@ -647,6 +677,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -693,6 +725,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -739,6 +773,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort
@@ -785,6 +821,8 @@ dataSources:
           file: ./abis/Otoken.json
         - name: OptionsPremiumPricer
           file: ./abis/OptionsPremiumPricer.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: OpenShort(indexed address,uint256,indexed address)
           handler: handleOpenShort

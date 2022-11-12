@@ -7,7 +7,9 @@ import {
 } from "@graphprotocol/graph-ts";
 import { Token } from "../../generated/schema";
 import { getOrCreateToken } from "./initalizers";
-
+import { RibbonThetaVaultWithSwap as VaultContract } from '../../generated/RibbonstETHCoveredCall/RibbonThetaVaultWithSwap';
+import { Otoken as OTokenContract } from '../../generated/RibbonrETHCoveredCall/Otoken';
+import * as constants from './constants';
 export function enumToPrefix(snake: string): string {
   return snake.toLowerCase().replace("_", "-") + "-";
 }
@@ -19,103 +21,24 @@ export function readValue<T>(
   return callResult.reverted ? defaultValue : callResult.value;
 }
 
-export function getLpTokenFromPool(
-  poolAddress: Address,
-  block: ethereum.Block,
-  newRegistryAddress: Address = constants.ADDRESS_ZERO
-): Token {
-  let lpTokenAddress = constants.ADDRESS_ZERO;
-
-  if (constants.POOL_LP_TOKEN_MAP.has(poolAddress.toHexString())) {
-    return getOrCreateToken(
-      constants.POOL_LP_TOKEN_MAP.get(poolAddress.toHexString()),
-      block
-    );
-  }
-
-  //Pool Contract
-  let poolContract = PoolContract.bind(poolAddress);
-
-  let lpTokenCall = poolContract.try_lp_token();
-  if (!lpTokenCall.reverted) {
-    if (
-      readValue<Address>(lpTokenCall, constants.ADDRESS_ZERO).notEqual(
-        constants.ADDRESS_ZERO
-      )
-    ) {
-      return getOrCreateToken(
-        readValue<Address>(lpTokenCall, constants.ADDRESS_ZERO),
-        block
-      );
-    }
-  }
-
-  // Registry Contract
-
-  let registryContract = RegistryContract.bind(constants.REGISTRY_ADDRESS);
-  lpTokenAddress = readValue<Address>(
-    registryContract.try_get_lp_token(poolAddress),
-    constants.NULL.TYPE_ADDRESS
-  );
-  if (lpTokenAddress.notEqual(constants.NULL.TYPE_ADDRESS))
-    return getOrCreateToken(lpTokenAddress, block);
-
-  // Factory Contract
-
-  let factoryContract = FactoryContract.bind(constants.FACTORY_ADDRESS);
-  lpTokenAddress = readValue<Address>(
-    factoryContract.try_get_lp_token(poolAddress),
-    constants.NULL.TYPE_ADDRESS
-  );
-
-  if (lpTokenAddress.notEqual(constants.NULL.TYPE_ADDRESS))
-    return getOrCreateToken(lpTokenAddress, block);
-
-  if (!newRegistryAddress.equals(constants.ADDRESS_ZERO)) {
-    let newFactoryContract = FactoryContract.bind(newRegistryAddress);
-    lpTokenAddress = readValue<Address>(
-      newFactoryContract.try_get_lp_token(poolAddress),
-      constants.NULL.TYPE_ADDRESS
-    );
-    if (lpTokenAddress.notEqual(constants.NULL.TYPE_ADDRESS))
-      return getOrCreateToken(lpTokenAddress, block);
-  }
-  if (!newRegistryAddress.equals(constants.ADDRESS_ZERO)) {
-    let newFactoryContract = FactoryContract.bind(newRegistryAddress);
-    lpTokenAddress = readValue<Address>(
-      newFactoryContract.try_get_token(poolAddress),
-      constants.NULL.TYPE_ADDRESS
-    );
-    if (lpTokenAddress.notEqual(constants.NULL.TYPE_ADDRESS))
-      return getOrCreateToken(lpTokenAddress, block);
-  }
-  return getOrCreateToken(poolAddress, block);
-}
 
 export function getPoolCoins(
   poolAddress: Address,
-  block: ethereum.Block
+  vaultAddress: Address,
+  block: ethereum.Block,
 ): string[] {
-  let poolContract = PoolContract.bind(poolAddress);
-  let inputTokens: string[] = new Array();
-  let i = 0;
-  while (i >= 0) {
-    let inputToken = readValue<Address>(
-      poolContract.try_coins(BigInt.fromI32(i)),
-      constants.NULL.TYPE_ADDRESS
-    );
-
-    if (inputToken.equals(constants.NULL.TYPE_ADDRESS)) {
-      i = -1;
-      continue;
-    }
-
-    inputTokens.push(getOrCreateToken(inputToken, block).id);
-    i += 1;
-  }
-
+  const otokenContract = OTokenContract.bind(poolAddress);
+  
   return inputTokens;
 }
+
+export function getVaultBalance(vaultAddress: Address,decimals:BigDecimal): BigDecimal{
+  const vaultContract = VaultContract.bind(vaultAddress);
+  
+  const vaultBalance = readValue<BigInt>(vaultContract.try_totalBalance(), constants.BIGINT_ZERO).divDecimal(decimals);
+  return vaultBalance;
+}
+
 
 export function getPoolBalances(
   poolAddress: Address,

@@ -1,9 +1,18 @@
-import { Address, ethereum,BigInt } from "@graphprotocol/graph-ts";
-
-
-import { FinancialsDailySnapshot, Protocol, Token, UsageMetricsDailySnapshot, UsageMetricsHourlySnapshot } from "../../generated/schema"
+import {
+  FinancialsDailySnapshot,
+  Pool,
+  Protocol,
+  Token,
+  UsageMetricsDailySnapshot,
+  UsageMetricsHourlySnapshot,
+  _Auction,
+  _Vault,
+} from "../../generated/schema";
+import { RibbonThetaVaultWithSwap as VaultContract } from "../../generated/RibbonstETHCoveredCall/RibbonThetaVaultWithSwap";
+import { Otoken as OtokenContract } from "../../generated/RibbonrETHCoveredCall/Otoken";
+import { ERC20 as ERC20Contract } from "../../generated/RibbonstETHCoveredCall/ERC20";
+import { Address, ethereum, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 import { getUsdPricePerToken } from "../prices";
-import ERC20 
 import * as constants from "./constants";
 import * as utils from "./utils";
 
@@ -42,7 +51,7 @@ export function getOrCreateToken(
     !token.lastPriceBlockNumber ||
     block.number
       .minus(token.lastPriceBlockNumber!)
-      .gt(constants.BSC_AVERAGE_BLOCK_PER_HOUR)
+      .gt(constants.ETH_AVERAGE_BLOCK_PER_HOUR)
   ) {
     let tokenPrice = getUsdPricePerToken(address);
     token.lastPriceUSD = tokenPrice.usdPrice.div(tokenPrice.decimalsBaseTen);
@@ -54,14 +63,12 @@ export function getOrCreateToken(
   return token;
 }
 
-export function getOrCreateRewardToken(){}
-
+export function getOrCreateRewardToken() {}
 
 export function getOrCreateProtocol(): Protocol {
-  let protocol = Protocol.load("");
-  if (!protocol)
-  {
-    protocol = new Protocol("");
+  let protocol = Protocol.load(constants.ETH_CALL_V2_CONTRACT.toString());
+  if (!protocol) {
+    protocol = new Protocol(constants.ETH_CALL_V2_CONTRACT.toString());
 
     protocol.name = constants.PROTOCOL_NAME;
     protocol.slug = constants.PROTOCOL_SLUG;
@@ -91,7 +98,7 @@ export function getOrCreateFinancialDailySnapshots(
 
   if (!financialMetrics) {
     financialMetrics = new FinancialsDailySnapshot(id.toString());
-    financialMetrics.protocol = constants.REGISTRY_ADDRESS.toHexString();
+    financialMetrics.protocol = constants.ETH_CALL_V2_CONTRACT.toHexString();
 
     financialMetrics.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
     financialMetrics.dailySupplySideRevenueUSD = constants.BIGDECIMAL_ZERO;
@@ -122,7 +129,7 @@ export function getOrCreateUsageMetricsDailySnapshot(
 
   if (!usageMetrics) {
     usageMetrics = new UsageMetricsDailySnapshot(id);
-    usageMetrics.protocol = constants.REGISTRY_ADDRESS.toHexString();
+    usageMetrics.protocol = constants.ETH_CALL_V2_CONTRACT.toHexString();
 
     usageMetrics.dailyActiveUsers = 0;
     usageMetrics.cumulativeUniqueUsers = 0;
@@ -150,7 +157,7 @@ export function getOrCreateUsageMetricsHourlySnapshot(
 
   if (!usageMetrics) {
     usageMetrics = new UsageMetricsHourlySnapshot(metricsID);
-    usageMetrics.protocol = constants.REGISTRY_ADDRESS.toHexString();
+    usageMetrics.protocol = constants.ETH_CALL_V2_CONTRACT.toHexString();
 
     usageMetrics.hourlyActiveUsers = 0;
     usageMetrics.cumulativeUniqueUsers = 0;
@@ -165,10 +172,111 @@ export function getOrCreateUsageMetricsHourlySnapshot(
   return usageMetrics;
 }
 
+export function getOrCreatePool(
+  block: ethereum.Block,
+  oToken: Address,
+  vault = constants.ADDRESS_ZERO
+): Pool {
+  let pool = Pool.load(oToken.toHexString());
+  if (!pool) {
+    pool = new Pool(oToken.toHexString());
+    pool.protocol = constants.ETH_CALL_V2_CONTRACT.toString();
 
-export function getOrCreatePool(){}
-export function getOrCreatePoolDailySnapshot(){}
-export function getOrCreatePoolHourlySnapshot(){}
+    const oTokenContract = OtokenContract.bind(oToken);
+    pool.name = utils.readValue(oTokenContract.try_name(), "");
+    pool.symbol = utils.readValue(oTokenContract.try_symbol(), "");
 
-export function getOrCreateVault(){}
-export function getOrCreateAuction(){}
+    pool.inputTokens = [];
+    pool.inputTokenBalances = [];
+    pool.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
+
+    pool.outputToken = "";
+    pool.outputTokenPriceUSD = constants.BIGDECIMAL_ZERO;
+    pool.outputTokenSupply = constants.BIGINT_ZERO;
+
+    pool.stakedOutputTokenAmount = constants.BIGINT_ZERO;
+    pool.rewardTokens = [];
+
+    pool.rewardTokenEmissionsAmount = [];
+    pool.rewardTokenEmissionsUSD = [];
+
+    pool.createdBlockNumber = block.number;
+    pool.createdTimestamp = block.timestamp;
+    pool.cumulativeProtocolSideRevenueUSD = constants.BIGDECIMAL_ZERO;
+    pool.cumulativeSupplySideRevenueUSD = constants.BIGDECIMAL_ZERO;
+    pool.cumulativeTotalRevenueUSD = constants.BIGDECIMAL_ZERO;
+    pool._vault = vault.toString();
+    pool.save();
+  }
+  return pool;
+}
+
+export function getOrCreatePoolDailySnapshot() {}
+export function getOrCreatePoolHourlySnapshot() {}
+
+export function getOrCreateVault(vaultAddress: Address): _Vault {
+  let vault = _Vault.load(vaultAddress.toString());
+  let decimals = 0;
+  if (!vault) {
+    vault = new _Vault(vaultAddress.toString());
+
+    const vaultContract = VaultContract.bind(vaultAddress);
+
+    vault.name = utils.readValue(vaultContract.try_name(), "");
+    vault.symbol = utils.readValue(vaultContract.try_symbol(), "");
+    decimals = utils.readValue(vaultContract.try_decimals(), 0);
+    vault.decimals = decimals;
+
+    vault.totalValueLocked = utils
+      .readValue(vaultContract.try_totalBalance(), constants.BIGINT_ZERO)
+      .divDecimal(BigDecimal.fromString(decimals.toString()));
+    vault.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
+    vault.currentOption = utils
+      .readValue(vaultContract.try_currentOption(), constants.ADDRESS_ZERO)
+      .toHexString();
+    vault.isPut = false;
+    vault.currentOptionAuctionId = utils.readValue(
+      vaultContract.try_optionAuctionID(),
+      constants.BIGINT_ZERO
+    );
+    vault.liquidityGauge = utils
+      .readValue(vaultContract.try_liquidityGauge(), constants.ADDRESS_ZERO)
+      .toHexString();
+
+    vault.managementFeesCollected = constants.BIGDECIMAL_ZERO;
+    vault.performanceFeeCollected = constants.BIGDECIMAL_ZERO;
+    vault.totalFeeCollected = constants.BIGDECIMAL_ZERO;
+
+    vault.optionsPremiumPricer = utils
+      .readValue(vaultContract.try_optionsPremiumPricer(), constants.ADDRESS_ZERO)
+      .toHexString();;
+    vault.options = [];
+    vault.oTokenFactory = utils
+      .readValue(vaultContract.try_OTOKEN_FACTORY(), constants.ADDRESS_ZERO)
+      .toHexString();
+    vault.marginPool = utils
+      .readValue(vaultContract.try_MARGIN_POOL(), constants.ADDRESS_ZERO)
+      .toHexString();;
+    vault.gammaController = utils
+      .readValue(vaultContract.try_GAMMA_CONTROLLER(), constants.ADDRESS_ZERO)
+      .toHexString();;
+  }
+  return vault;
+}
+
+export function getOrCreateAuction(
+  vaultAddress: Address,
+  auctionId: BigInt,
+  optionToken: Address,
+  biddingToken: Address
+): _Auction {
+  let auction = _Auction.load(auctionId.toString());
+  if (!auction) {
+    auction = new _Auction(auctionId.toString());
+    auction.optionToken = optionToken.toHexString();
+    auction.biddingToken = biddingToken.toHexString();
+    auction.vault = vaultAddress.toHexString();
+    auction.save();
+  }
+  return auction;
+}

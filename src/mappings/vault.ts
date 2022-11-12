@@ -10,9 +10,8 @@ export function handleInitiateGnosisAuction(
   let auctionId = event.params. auctionCounter;
   let optionToken = event.params.auctioningToken;
   let biddingToken = event.params.biddingToken;
-  let auction = getOrCreateAuction(auctionId,optionToken,biddingToken);
-
-  
+  let vaultAddress = event.address;
+  let auction = getOrCreateAuction(vaultAddress, auctionId, optionToken, biddingToken);
 }
 
 export function handleAuctionCleared(event: AuctionCleared): void {
@@ -81,7 +80,7 @@ export function handleAuctionCleared(event: AuctionCleared): void {
 
 export function handleNewOffer(event: NewOffer): void {
   let auctionID = event.params.swapId;
-  let optionToken = event.params.oToken;
+  let optionToken = event.params. oToken;
 
   let auction = new SwapOffer(auctionID.toHexString());
 
