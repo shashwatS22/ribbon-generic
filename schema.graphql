@@ -56,6 +56,8 @@ type Token @entity {
 
 
   _isOtoken: Boolean!
+
+  _vaultId: String!
 }
 
 enum RewardTokenType {
@@ -146,6 +148,12 @@ type Protocol @entity {
 
   " All pools that belong to this protocol "
   pools: [Pool!]! @derivedFrom(field: "protocol")
+
+  _poolIds: [String!]
+
+  _vaultIds: [String!]
+
+ 
 }
 
 ###############################
@@ -315,6 +323,8 @@ type Pool @entity {
   hourlySnapshots: [PoolHourlySnapshot!]! @derivedFrom(field: "pool")
 
   _vault: String
+
+
 }
 
 type PoolDailySnapshot @entity {

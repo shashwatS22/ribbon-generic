@@ -5,11 +5,20 @@ import {
   ethereum,
   BigDecimal,
 } from "@graphprotocol/graph-ts";
-import { Token } from "../../generated/schema";
-import { getOrCreateToken } from "./initalizers";
-import { RibbonThetaVaultWithSwap as VaultContract } from '../../generated/RibbonstETHCoveredCall/RibbonThetaVaultWithSwap';
-import { Otoken as OTokenContract } from '../../generated/RibbonrETHCoveredCall/Otoken';
-import * as constants from './constants';
+import { Pool, Token, _Vault } from "../../generated/schema";
+import {
+  getOrCreateProtocol,
+  getOrCreateToken,
+  getOrCreateVault,
+} from "./initalizers";
+import { RibbonThetaVaultWithSwap as VaultContract } from "../../generated/RibbonstETHCoveredCall/RibbonThetaVaultWithSwap";
+import { Otoken as OTokenContract } from "../../generated/RibbonrETHCoveredCall/Otoken";
+
+import {
+  OptionsPremiumPricer as OptionsPremiumPricerContract,
+} from "../../generated/RibbonrETHCoveredCall/OptionsPremiumPricer";
+import { ERC20 as ERC20Contract } from "../../generated/RibbonrETHCoveredCall/ERC20";
+import * as constants from "./constants";
 export function enumToPrefix(snake: string): string {
   return snake.toLowerCase().replace("_", "-") + "-";
 }
@@ -21,141 +30,37 @@ export function readValue<T>(
   return callResult.reverted ? defaultValue : callResult.value;
 }
 
-
-export function getPoolCoins(
-  poolAddress: Address,
+export function getVaultBalance(
   vaultAddress: Address,
-  block: ethereum.Block,
-): string[] {
-  const otokenContract = OTokenContract.bind(poolAddress);
-  
-  return inputTokens;
-}
-
-export function getVaultBalance(vaultAddress: Address,decimals:BigDecimal): BigDecimal{
+  decimals: BigDecimal
+): BigDecimal {
   const vaultContract = VaultContract.bind(vaultAddress);
-  
-  const vaultBalance = readValue<BigInt>(vaultContract.try_totalBalance(), constants.BIGINT_ZERO).divDecimal(decimals);
+
+  const vaultBalance = readValue<BigInt>(
+    vaultContract.try_totalBalance(),
+    constants.BIGINT_ZERO
+  ).divDecimal(decimals);
   return vaultBalance;
 }
 
-
-export function getPoolBalances(
-  poolAddress: Address,
-  inputTokens: string[]
-): BigInt[] {
-  const poolContract = PoolContract.bind(poolAddress);
-
-  let inputTokenBalances: BigInt[] = [];
-  for (let i = 0; i < inputTokens.length; i++) {
-    let balance = readValue<BigInt>(
-      poolContract.try_balances(BigInt.fromI32(i)),
-      constants.BIGINT_ZERO
-    );
-
-    inputTokenBalances.push(balance);
-  }
-
-  return inputTokenBalances;
-}
-
-export function getPoolFees(poolAddress: Address): PoolFeesType {
-  const poolContract = PoolContract.bind(poolAddress);
-
-  let totalFees = readValue<BigInt>(
-    poolContract.try_fee(),
-    constants.DEFAULT_POOL_FEE
-  ).divDecimal(constants.FEE_DENOMINATOR);
-
-  let adminFees = readValue<BigInt>(
-    poolContract.try_admin_fee(),
-    constants.DEFAULT_ADMIN_FEE
-  ).divDecimal(constants.FEE_DENOMINATOR);
-
-  let lpFeeId =
-    enumToPrefix(constants.LiquidityPoolFeeType.FIXED_LP_FEE) +
-    poolAddress.toHexString();
-  let tradingFeeId =
-    enumToPrefix(constants.LiquidityPoolFeeType.FIXED_TRADING_FEE) +
-    poolAddress.toHexString();
-  let protocolFeeId =
-    enumToPrefix(constants.LiquidityPoolFeeType.FIXED_PROTOCOL_FEE) +
-    poolAddress.toHexString();
-
-  let tradingFee = getOrCreateLiquidityPoolFee(
-    tradingFeeId,
-    constants.LiquidityPoolFeeType.FIXED_TRADING_FEE,
-    totalFees.times(constants.BIGDECIMAL_HUNDRED)
-  );
-
-  let protocolFee = getOrCreateLiquidityPoolFee(
-    protocolFeeId,
-    constants.LiquidityPoolFeeType.FIXED_PROTOCOL_FEE,
-    totalFees.times(adminFees).times(constants.BIGDECIMAL_HUNDRED)
-  );
-
-  let lpFee = getOrCreateLiquidityPoolFee(
-    lpFeeId,
-    constants.LiquidityPoolFeeType.FIXED_LP_FEE,
-    totalFees
-      .minus(totalFees.times(adminFees))
-      .times(constants.BIGDECIMAL_HUNDRED)
-  );
-
-  return new PoolFeesType(tradingFee, protocolFee, lpFee);
-}
-export function getPoolTokenWeights(
-  inputTokens: string[],
-  inputTokenBalances: BigInt[],
-  totalValueLockedUSD: BigDecimal,
-  block: ethereum.Block
-): BigDecimal[] {
-  let inputTokenWeights: BigDecimal[] = [];
-
-  for (let i = 0; i < inputTokens.length; i++) {
- 
-    '
-    '   if (totalValueLockedUSD == constants.BIGDECIMAL_ZERO) {
-      inputTokenWeights.push(constants.BIGDECIMAL_ZERO);
-      continue;
-    }
-
-    let balance = inputTokenBalances[i];
-    let inputToken = getOrCreateToken(
-      Address.fromString(inputTokens[i]),
-      block
-    );
-
-    let balanceUSD = balance
-      .divDecimal(
-        constants.BIGINT_TEN.pow(inputToken.decimals as u8).toBigDecimal()
-      )
-      .times(inputToken.lastPriceUSD!);
-    let weight = balanceUSD
-      .div(totalValueLockedUSD)
-      .times(constants.BIGDECIMAL_HUNDRED);
-
-    inputTokenWeights.push(weight);
-  }
-
-  return inputTokenWeights;
-}
-
-export function updateProtocolAfterNewLiquidityPool(
-  poolAddress: Address
-): void {
-  const protocol = getOrCreateDexAmmProtocol();
-
+export function updateProtocolAfterNewPool(poolAddress: Address): void {
+  const protocol = getOrCreateProtocol();
   let poolIds = protocol._poolIds;
-  poolIds.push(poolAddress.toHexString());
+  poolIds!.push(poolAddress.toHexString());
   protocol._poolIds = poolIds;
-
   protocol.totalPoolCount += 1;
-
   protocol.save();
 }
+export function updateProtocolAfterNewVault(vaultAddress: Address): void {
+  const protocol = getOrCreateProtocol();
+  let vaultIds = protocol._vaultIds;
+  vaultIds!.push(vaultAddress.toHexString());
+  protocol._vaultIds = vaultIds;
+  protocol.save();
+}
+
 export function checkIfPoolExists(poolAddress: Address): boolean {
-  let pool = LiquidityPool.load(poolAddress.toHexString());
+  let pool = Pool.load(poolAddress.toHexString());
   if (!pool) {
     return false;
   }
@@ -163,22 +68,21 @@ export function checkIfPoolExists(poolAddress: Address): boolean {
 }
 
 export function updateProtocolTotalValueLockedUSD(): void {
-  const protocol = getOrCreateDexAmmProtocol();
+  const protocol = getOrCreateProtocol();
 
-  const poolIds = protocol._poolIds;
+  const vaultIds = protocol._vaultIds!;
   let totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
 
-  for (let poolIdx = 0; poolIdx < poolIds.length; poolIdx++) {
-    const pool = LiquidityPool.load(poolIds[poolIdx]);
+  for (let vaultIdx = 0; vaultIdx < vaultIds.length; vaultIdx++) {
+    const vault = _Vault.load(vaultIds[vaultIdx]);
 
-    if (!pool) continue;
-    totalValueLockedUSD = totalValueLockedUSD.plus(pool.totalValueLockedUSD);
+    if (!vault) continue;
+    totalValueLockedUSD = totalValueLockedUSD.plus(vault.totalValueLockedUSD);
   }
 
   protocol.totalValueLockedUSD = totalValueLockedUSD;
   protocol.save();
 }
-
 
 export function getTokenDecimals(tokenAddr: Address): BigDecimal {
   const token = ERC20Contract.bind(tokenAddr);
@@ -191,36 +95,48 @@ export function getTokenDecimals(tokenAddr: Address): BigDecimal {
   return constants.BIGINT_TEN.pow(decimals as u8).toBigDecimal();
 }
 
-
-export function getOutputTokenPriceUSD(
-  poolAddress: Address,
-  block: ethereum.Block
+export function getOptionTokenPriceUSD(
+  vaultAddress: Address,
+  optionToken: Address,
 ): BigDecimal {
-  const pool = getOrCreateLiquidityPool(poolAddress, block);
 
-  if (pool.outputTokenSupply!.equals(constants.BIGINT_ZERO))
-    return constants.BIGDECIMAL_ZERO;
+  const vault = getOrCreateVault(vaultAddress);
+  const vaultContract = VaultContract.bind(vaultAddress);
+  
+  const vaultPricePerShare = readValue(
+    vaultContract.try_pricePerShare(),
+    constants.BIGINT_ZERO
+  ).divDecimal(BigDecimal.fromString(vault.decimals.toString()));
+  
+  const underlyingTokenPriceUSD = getUnderlyingTokenPriceFromOptionsPricer(vaultAddress, optionToken);
 
-  let lpToken = getLpTokenFromPool(poolAddress, block);
+  let optionsTokenPriceUSD = underlyingTokenPriceUSD.times(vaultPricePerShare);
 
-  let outputTokenSupply = pool.outputTokenSupply!.divDecimal(
-    constants.BIGINT_TEN.pow(lpToken.decimals as u8).toBigDecimal()
-  );
-  let outputTokenPriceUSD = pool.totalValueLockedUSD.div(outputTokenSupply);
-
-  return outputTokenPriceUSD;
-}
-
-export function calculateAverage(prices: BigDecimal[]): BigDecimal {
-  let sum = BigDecimal.fromString("0");
-  for (let i = 0; i < prices.length; i++) {
-    sum = sum.plus(prices[i]);
-  }
-
-  return sum.div(
-    BigDecimal.fromString(BigInt.fromI32(prices.length).toString())
-  );
+  return optionsTokenPriceUSD;
 }
 
 
+export function getUnderlyingTokenPriceFromOptionsPricer(vaultAddress:Address,optionToken:Address): BigDecimal{
+  const vaultContract = VaultContract.bind(vaultAddress);
+  const currentOption = optionToken;
 
+  const optionsPremiumPricer = readValue(
+    vaultContract.try_optionsPremiumPricer(),
+    constants.ADDRESS_ZERO
+  );
+
+  let optionContract = OTokenContract.bind(currentOption);
+  const optionsPremiumPricerContract = OptionsPremiumPricerContract.bind(
+    optionsPremiumPricer
+  );
+  const currentOptionDecimals = BigDecimal.fromString(
+    readValue(optionContract.try_decimals(), 8).toString()
+  );
+
+  const underlyingTokenPriceUSD = readValue(
+    optionsPremiumPricerContract.try_getUnderlyingPrice(),
+    constants.BIGINT_ZERO
+  ).divDecimal(currentOptionDecimals);
+
+  return underlyingTokenPriceUSD;
+}

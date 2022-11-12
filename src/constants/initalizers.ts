@@ -12,37 +12,64 @@ import { RibbonThetaVaultWithSwap as VaultContract } from "../../generated/Ribbo
 import { Otoken as OtokenContract } from "../../generated/RibbonrETHCoveredCall/Otoken";
 import { ERC20 as ERC20Contract } from "../../generated/RibbonstETHCoveredCall/ERC20";
 import { Address, ethereum, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
-import { getUsdPricePerToken } from "../prices";
+
 import * as constants from "./constants";
 import * as utils from "./utils";
 
 export function getOrCreateToken(
   address: Address,
-  block: ethereum.Block
+  block: ethereum.Block,
+  isOToken = false,
+  vault = constants.ADDRESS_ZERO,
 ): Token {
   let token = Token.load(address.toHexString());
 
   if (!token) {
     token = new Token(address.toHexString());
+    
+    if (!isOToken) {
+      const contract = ERC20Contract.bind(address);
 
-    const contract = ERC20Contract.bind(address);
+      token.name = utils.readValue<string>(contract.try_name(), "");
+      token.symbol = utils.readValue<string>(contract.try_symbol(), "");
+      token.decimals = utils.readValue<i32>(
+        contract.try_decimals(),
+        BigInt.fromI32(constants.DEFAULT_DECIMALS).toI32() as u8
+      );
+    
+      token._vaultId = vault.toHexString();
 
-    token.name = utils.readValue<string>(contract.try_name(), "");
-    token.symbol = utils.readValue<string>(contract.try_symbol(), "");
-    token.decimals = utils.readValue<i32>(
-      contract.try_decimals(),
-      BigInt.fromI32(constants.DEFAULT_DECIMALS).toI32() as u8
-    );
-
-    if (address.equals(constants.ETH_ADDRESS)) {
-      token.name = constants.ETH_NAME;
-      token.symbol = constants.ETH_SYMBOL;
-      token.decimals = constants.DEFAULT_DECIMALS;
+      if (address.equals(constants.ETH_ADDRESS)) {
+        token.name = constants.ETH_NAME;
+        token.symbol = constants.ETH_SYMBOL;
+        token.decimals = constants.DEFAULT_DECIMALS;
+      }
+      token.lastPriceUSD = utils.getUnderlyingTokenPriceFromOptionsPricer(
+        vault,
+        address
+      );
+      token.lastPriceBlockNumber = block.number;
     }
+    if (isOToken) {
+      const contract = OtokenContract.bind(address);
 
-    let tokenPrice = getUsdPricePerToken(address);
-    token.lastPriceUSD = tokenPrice.usdPrice.div(tokenPrice.decimalsBaseTen);
-    token.lastPriceBlockNumber = block.number;
+      token.name = utils.readValue<string>(contract.try_name(), "");
+      token.symbol = utils.readValue<string>(contract.try_symbol(), "");
+      token.decimals = utils.readValue<i32>(
+        contract.try_decimals(),
+        BigInt.fromI32(constants.DEFAULT_DECIMALS).toI32() as u8
+      );
+
+      token._vaultId = vault.toHexString();
+
+      if (address.equals(constants.ETH_ADDRESS)) {
+        token.name = constants.ETH_NAME;
+        token.symbol = constants.ETH_SYMBOL;
+        token.decimals = constants.DEFAULT_DECIMALS;
+      }
+      token.lastPriceUSD = utils.getOptionTokenPriceUSD(vault, address);
+      token.lastPriceBlockNumber = block.number;
+    }
     token.save();
   }
 
@@ -53,11 +80,24 @@ export function getOrCreateToken(
       .minus(token.lastPriceBlockNumber!)
       .gt(constants.ETH_AVERAGE_BLOCK_PER_HOUR)
   ) {
-    let tokenPrice = getUsdPricePerToken(address);
-    token.lastPriceUSD = tokenPrice.usdPrice.div(tokenPrice.decimalsBaseTen);
-    token.lastPriceBlockNumber = block.number;
+    if (token._vaultId) {
+      if (!token._isOtoken) {
+        token.lastPriceUSD = utils.getUnderlyingTokenPriceFromOptionsPricer(
+          vault,
+          address
+        );
+        token.lastPriceBlockNumber = block.number;
+      }
+      if (token._isOtoken) {
+        token.lastPriceUSD = utils.getOptionTokenPriceUSD(
+          vault,
+          address
+        );
+        token.lastPriceBlockNumber = block.number;
+      }
 
-    token.save();
+      token.save();
+    }
   }
 
   return token;
@@ -227,9 +267,7 @@ export function getOrCreateVault(vaultAddress: Address): _Vault {
     decimals = utils.readValue(vaultContract.try_decimals(), 0);
     vault.decimals = decimals;
 
-    vault.totalValueLocked = utils
-      .readValue(vaultContract.try_totalBalance(), constants.BIGINT_ZERO)
-      .divDecimal(BigDecimal.fromString(decimals.toString()));
+    vault.totalValueLocked = utils.getVaultBalance(vaultAddress, BigDecimal.fromString(decimals.toString()));
     vault.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
     vault.currentOption = utils
       .readValue(vaultContract.try_currentOption(), constants.ADDRESS_ZERO)

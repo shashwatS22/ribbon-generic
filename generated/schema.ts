@@ -20,6 +20,7 @@ export class Token extends Entity {
     this.set("symbol", Value.fromString(""));
     this.set("decimals", Value.fromI32(0));
     this.set("_isOtoken", Value.fromBoolean(false));
+    this.set("_vaultId", Value.fromString(""));
   }
 
   save(): void {
@@ -115,6 +116,15 @@ export class Token extends Entity {
 
   set _isOtoken(value: boolean) {
     this.set("_isOtoken", Value.fromBoolean(value));
+  }
+
+  get _vaultId(): string {
+    let value = this.get("_vaultId");
+    return value!.toString();
+  }
+
+  set _vaultId(value: string) {
+    this.set("_vaultId", Value.fromString(value));
   }
 }
 
@@ -396,6 +406,40 @@ export class Protocol extends Entity {
 
   set pools(value: Array<string>) {
     this.set("pools", Value.fromStringArray(value));
+  }
+
+  get _poolIds(): Array<string> | null {
+    let value = this.get("_poolIds");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set _poolIds(value: Array<string> | null) {
+    if (!value) {
+      this.unset("_poolIds");
+    } else {
+      this.set("_poolIds", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get _vaultIds(): Array<string> | null {
+    let value = this.get("_vaultIds");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set _vaultIds(value: Array<string> | null) {
+    if (!value) {
+      this.unset("_vaultIds");
+    } else {
+      this.set("_vaultIds", Value.fromStringArray(<Array<string>>value));
+    }
   }
 }
 
