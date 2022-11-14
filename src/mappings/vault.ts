@@ -3,79 +3,40 @@ import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import {InitiateGnosisAuction, Deposit,Withdraw,InstantWithdraw, CollectVaultFees,NewOffer,OpenShort,CloseShort} from '../../generated/RibbonETHCoveredCall/RibbonThetaVaultWithSwap';
 import {AuctionCleared,SettleAuctionCall as SettleAuction} from '../../generated/GnosisAuction/GnosisAuction';
 import {DistributePremium} from '../../generated/RibbonTreasuryVaultPERP/RibbonTreasuryVault';
-import {getOrCreateAuction} from '../constants/initalizers'
+import {getOrCreateAuction, getOrCreatePool, getOrCreateToken, getOrCreateVault} from '../constants/initalizers'
 export function handleInitiateGnosisAuction(
   event: InitiateGnosisAuction
 ): void {
-  let auctionId = event.params. auctionCounter;
+  let auctionId = event.params.auctionCounter;
   let optionToken = event.params.auctioningToken;
   let biddingToken = event.params.biddingToken;
   let vaultAddress = event.address;
-  let auction = getOrCreateAuction(vaultAddress, auctionId, optionToken, biddingToken);
+  getOrCreateToken(biddingToken, vaultAddress, false, event.block);
+  getOrCreateToken(optionToken, vaultAddress, true, event.block);
+  getOrCreateAuction( auctionId,vaultAddress, optionToken, biddingToken);
+  getOrCreateVault(vaultAddress,event.block);
+  getOrCreatePool(optionToken, vaultAddress, event.block);
+  
+
+  
 }
 
 export function handleAuctionCleared(event: AuctionCleared): void {
   let auctionID = event.params.auctionId;
-  let auction = GnosisAuction.load(auctionID.toHexString());
-  if (auction == null) {
-    return;
-  }
+  let auction = getOrCreateAuction(auctionID);
+  
+  let optionsSold = event.params.soldAuctioningTokens;
+  let totalPremium = event.params.soldBiddingTokens;
+  if (auction == null) return;
 
   let optionToken = auction.optionToken;
-  let shortPosition = VaultShortPosition.load(optionToken.toHexString());
-  if (shortPosition == null) {
-    return;
-  }
-
-  let vault = Vault.load(shortPosition.vault);
+  let vault = getOrCreateVault(Address.fromString(auction.vault), event.block);
+  
   if (vault == null) {
     return;
   }
-
-  let tradeID =
-    optionToken.toHexString() +
-    "-" +
-    event.transaction.hash.toHexString() +
-    "-" +
-    event.transactionLogIndex.toString();
-
-  let optionsSold = event.params.soldAuctioningTokens;
-  let totalPremium = event.params.soldBiddingTokens;
-
-  // If there are no premiums exchanging hands,
-  // This means that the auction is settled without any bids
-  // This is rare, but has happened before.
-  if (totalPremium == BigInt.fromI32(0)) {
-    return;
-  }
-
-  updateVaultPerformance(shortPosition.vault, event.block.timestamp.toI32());
-
-  let optionTrade = new VaultOptionTrade(tradeID);
-  optionTrade.vault = shortPosition.vault;
-
-  optionTrade.sellAmount = optionsSold;
-  optionTrade.premium = totalPremium;
-
-  optionTrade.vaultShortPosition = optionToken.toHexString();
-  optionTrade.timestamp = event.block.timestamp;
-  optionTrade.txhash = event.transaction.hash;
-  optionTrade.save();
-
-  if (shortPosition.premiumEarned === null) {
-    shortPosition.premiumEarned = totalPremium;
-  } else {
-    shortPosition.premiumEarned += totalPremium;
-  }
-  shortPosition.save();
-
-  vault.totalPremiumEarned = vault.totalPremiumEarned.plus(totalPremium);
-  vault.save();
-
-  refreshAllAccountBalances(
-    Address.fromString(shortPosition.vault),
-    event.block.timestamp.toI32()
-  );
+  
+  
 }
 
 export function handleNewOffer(event: NewOffer): void {

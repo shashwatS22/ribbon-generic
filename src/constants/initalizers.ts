@@ -2,6 +2,7 @@ import {
   FinancialsDailySnapshot,
   Pool,
   Protocol,
+  RewardToken,
   Token,
   UsageMetricsDailySnapshot,
   UsageMetricsHourlySnapshot,
@@ -18,15 +19,15 @@ import * as utils from "./utils";
 
 export function getOrCreateToken(
   address: Address,
-  block: ethereum.Block,
-  isOToken = false,
   vault = constants.ADDRESS_ZERO,
+  isOToken = false,
+  block: ethereum.Block
 ): Token {
   let token = Token.load(address.toHexString());
 
   if (!token) {
     token = new Token(address.toHexString());
-    
+
     if (!isOToken) {
       const contract = ERC20Contract.bind(address);
 
@@ -36,7 +37,7 @@ export function getOrCreateToken(
         contract.try_decimals(),
         BigInt.fromI32(constants.DEFAULT_DECIMALS).toI32() as u8
       );
-    
+
       token._vaultId = vault.toHexString();
 
       if (address.equals(constants.ETH_ADDRESS)) {
@@ -89,10 +90,7 @@ export function getOrCreateToken(
         token.lastPriceBlockNumber = block.number;
       }
       if (token._isOtoken) {
-        token.lastPriceUSD = utils.getOptionTokenPriceUSD(
-          vault,
-          address
-        );
+        token.lastPriceUSD = utils.getOptionTokenPriceUSD(vault, address);
         token.lastPriceBlockNumber = block.number;
       }
 
@@ -103,7 +101,7 @@ export function getOrCreateToken(
   return token;
 }
 
-export function getOrCreateRewardToken() {}
+export function getOrCreateRewardToken(): RewardToken {}
 
 export function getOrCreateProtocol(): Protocol {
   let protocol = Protocol.load(constants.ETH_CALL_V2_CONTRACT.toString());
@@ -213,9 +211,9 @@ export function getOrCreateUsageMetricsHourlySnapshot(
 }
 
 export function getOrCreatePool(
-  block: ethereum.Block,
   oToken: Address,
-  vault = constants.ADDRESS_ZERO
+  vault = constants.ADDRESS_ZERO,
+  block: ethereum.Block
 ): Pool {
   let pool = Pool.load(oToken.toHexString());
   if (!pool) {
@@ -248,17 +246,21 @@ export function getOrCreatePool(
     pool._vault = vault.toString();
     pool.save();
   }
+
   return pool;
 }
 
 export function getOrCreatePoolDailySnapshot() {}
 export function getOrCreatePoolHourlySnapshot() {}
 
-export function getOrCreateVault(vaultAddress: Address): _Vault {
+export function getOrCreateVault(
+  vaultAddress: Address,
+  block: ethereum.Block
+): _Vault {
   let vault = _Vault.load(vaultAddress.toString());
   let decimals = 0;
   if (!vault) {
-    vault = new _Vault(vaultAddress.toString());
+    vault = new _Vault(vaultAddress.toHexString());
 
     const vaultContract = VaultContract.bind(vaultAddress);
 
@@ -267,11 +269,21 @@ export function getOrCreateVault(vaultAddress: Address): _Vault {
     decimals = utils.readValue(vaultContract.try_decimals(), 0);
     vault.decimals = decimals;
 
-    vault.totalValueLocked = utils.getVaultBalance(vaultAddress, BigDecimal.fromString(decimals.toString()));
+    vault.totalValueLocked = utils.getVaultBalance(
+      vaultAddress,
+      BigDecimal.fromString(decimals.toString())
+    );
     vault.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
-    vault.currentOption = utils
-      .readValue(vaultContract.try_currentOption(), constants.ADDRESS_ZERO)
-      .toHexString();
+    const currentOption = utils.readValue(
+      vaultContract.try_currentOption(),
+      constants.ADDRESS_ZERO
+    );
+
+    vault.currentOption = getOrCreatePool(
+      currentOption,
+      vaultAddress,
+      block
+    ).id;
     vault.isPut = false;
     vault.currentOptionAuctionId = utils.readValue(
       vaultContract.try_optionAuctionID(),
@@ -286,27 +298,30 @@ export function getOrCreateVault(vaultAddress: Address): _Vault {
     vault.totalFeeCollected = constants.BIGDECIMAL_ZERO;
 
     vault.optionsPremiumPricer = utils
-      .readValue(vaultContract.try_optionsPremiumPricer(), constants.ADDRESS_ZERO)
-      .toHexString();;
-    vault.options = [];
+      .readValue(
+        vaultContract.try_optionsPremiumPricer(),
+        constants.ADDRESS_ZERO
+      )
+      .toHexString();
+    vault.options = [currentOption.toHexString()];
     vault.oTokenFactory = utils
       .readValue(vaultContract.try_OTOKEN_FACTORY(), constants.ADDRESS_ZERO)
       .toHexString();
     vault.marginPool = utils
       .readValue(vaultContract.try_MARGIN_POOL(), constants.ADDRESS_ZERO)
-      .toHexString();;
+      .toHexString();
     vault.gammaController = utils
       .readValue(vaultContract.try_GAMMA_CONTROLLER(), constants.ADDRESS_ZERO)
-      .toHexString();;
+      .toHexString();
   }
   return vault;
 }
 
 export function getOrCreateAuction(
-  vaultAddress: Address,
   auctionId: BigInt,
-  optionToken: Address,
-  biddingToken: Address
+  vaultAddress = constants.ADDRESS_ZERO,
+  optionToken = constants.ADDRESS_ZERO,
+  biddingToken = constants.ADDRESS_ZERO
 ): _Auction {
   let auction = _Auction.load(auctionId.toString());
   if (!auction) {
