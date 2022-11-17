@@ -121,6 +121,8 @@ export function getOrCreateProtocol(): Protocol {
     protocol.cumulativeSupplySideRevenueUSD = constants.BIGDECIMAL_ZERO;
     protocol.cumulativeProtocolSideRevenueUSD = constants.BIGDECIMAL_ZERO;
     protocol.cumulativeTotalRevenueUSD = constants.BIGDECIMAL_ZERO;
+    protocol._poolIds = [];
+    protocol._vaultIds = [];
     protocol.cumulativeUniqueUsers = 0;
     protocol.totalPoolCount = 0;
     protocol.save();
@@ -210,6 +212,7 @@ export function getOrCreateUsageMetricsHourlySnapshot(
   return usageMetrics;
 }
 
+//TODO
 export function getOrCreatePool(
   oToken: Address,
   vault = constants.ADDRESS_ZERO,
@@ -228,14 +231,15 @@ export function getOrCreatePool(
     pool.inputTokenBalances = [];
     pool.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
 
-    pool.outputToken = "";
-    pool.outputTokenPriceUSD = constants.BIGDECIMAL_ZERO;
-    pool.outputTokenSupply = constants.BIGINT_ZERO;
+    pool.outputToken = oToken.toHexString(); //current oToken
+
+    pool.outputTokenPriceUSD = constants.BIGDECIMAL_ZERO; //get From function
+    pool.outputTokenSupply = constants.BIGINT_ZERO; //get from oToken Contract
 
     pool.stakedOutputTokenAmount = constants.BIGINT_ZERO;
     pool.rewardTokens = [];
-
-    pool.rewardTokenEmissionsAmount = [];
+//Reward Token RBN price from price lib
+    pool.rewardTokenEmissionsAmount = []; 
     pool.rewardTokenEmissionsUSD = [];
 
     pool.createdBlockNumber = block.number;
@@ -268,17 +272,22 @@ export function getOrCreateVault(
     vault.symbol = utils.readValue(vaultContract.try_symbol(), "");
     decimals = utils.readValue(vaultContract.try_decimals(), 0);
     vault.decimals = decimals;
-
-    vault.totalValueLocked = utils.getVaultBalance(
+    const vaultBalance = utils.getVaultBalance(
       vaultAddress,
       BigDecimal.fromString(decimals.toString())
     );
-    vault.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
+    vault.totalValueLocked = vaultBalance;
     const currentOption = utils.readValue(
       vaultContract.try_currentOption(),
       constants.ADDRESS_ZERO
     );
 
+    vault.totalValueLockedUSD = utils
+      .getUnderlyingTokenPriceFromOptionsPricer(
+        Address.fromString(vault.id),
+        currentOption
+      )
+      .times(vaultBalance);
     vault.currentOption = getOrCreatePool(
       currentOption,
       vaultAddress,
@@ -313,6 +322,70 @@ export function getOrCreateVault(
     vault.gammaController = utils
       .readValue(vaultContract.try_GAMMA_CONTROLLER(), constants.ADDRESS_ZERO)
       .toHexString();
+    vault.save();
+  }
+
+  if (Address.fromString(vault.id) != constants.ADDRESS_ZERO) {
+    const vaultContract = VaultContract.bind(Address.fromString(vault.id));
+
+    const currentOption = utils.readValue(
+      vaultContract.try_currentOption(),
+      constants.ADDRESS_ZERO
+    );
+    const currentOptionAuctionId = utils.readValue(
+      vaultContract.try_optionAuctionID(),
+      constants.BIGINT_ZERO
+    );
+    const vaultTotalValueLocked = utils.getVaultBalance(
+      Address.fromString(vault.id),
+      BigDecimal.fromString(vault.decimals.toString())
+    );
+    if (!currentOption.equals(Address.fromString(vault.currentOption))) {
+      const oldOption = vault.currentOption;
+      let oldPool = getOrCreatePool(
+        Address.fromString(oldOption),
+        Address.fromString(vault.id),
+        block
+        );
+      const oldRewardTokenStakedAmountUSD = oldPool.rewardTokenEmissionsUSD;
+      const oldRewardTokenStakedAmount = oldPool.rewardTokenEmissionsAmount;
+      const newRewardTokenStakedAmountUSD = oldRewardTokenStakedAmountUSD;
+      const newRewardTokenStakedAmount = oldRewardTokenStakedAmount;
+      oldPool.rewardTokenEmissionsAmount = [constants.BIGINT_ZERO];
+      oldPool.rewardTokenEmissionsUSD = [constants.BIGDECIMAL_ZERO];
+      
+
+
+      oldPool.totalValueLockedUSD = constants.BIGDECIMAL_ZERO;
+      
+      oldPool._vault = constants.ADDRESS_ZERO.toHexString();
+      oldPool.save();
+      
+      
+
+      vault.currentOption = currentOption.toHexString();
+      vault.currentOptionAuctionId = currentOptionAuctionId;
+      vault.totalValueLocked = vaultTotalValueLocked;
+      vault.totalValueLockedUSD = utils
+        .getUnderlyingTokenPriceFromOptionsPricer(
+          Address.fromString(vault.id),
+          currentOption
+        )
+        .times(vaultTotalValueLocked);
+      vault.save();
+      let currentPool = getOrCreatePool(
+        currentOption,
+        Address.fromString(vault.id),
+        block
+      );
+      currentPool.rewardTokenEmissionsAmount = newRewardTokenStakedAmount;
+      currentPool.rewardTokenEmissionsUSD = newRewardTokenStakedAmountUSD;
+      currentPool.save();
+    }
+    if (!vault.currentOptionAuctionId.equals(currentOptionAuctionId)) {
+      vault.currentOptionAuctionId = currentOptionAuctionId;
+      vault.save();
+    }
   }
   return vault;
 }

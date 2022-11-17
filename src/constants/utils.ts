@@ -140,3 +140,9 @@ export function getUnderlyingTokenPriceFromOptionsPricer(vaultAddress:Address,op
 
   return underlyingTokenPriceUSD;
 }
+
+export function updateVaultsOnRollover(): void{
+  //get current oToken from contract
+  //if current token is not equal to saved token
+  //update current token and getOrCreatePool
+}
