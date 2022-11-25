@@ -37,18 +37,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonWBTCCoveredCall
     network: mainnet
@@ -86,18 +87,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonAAVECoveredCall
     network: mainnet
@@ -133,18 +135,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonstETHCoveredCall
     network: mainnet
@@ -180,18 +183,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonrETHCoveredCall
     network: mainnet
@@ -227,18 +231,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonApeCoveredCall
     network: mainnet
@@ -274,18 +279,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
           handler: handleCollectVaultFees
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: GnosisAuction
     network: mainnet
@@ -420,14 +426,12 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: CollectVaultFees(uint256,uint256,uint256,indexed address)
@@ -462,8 +466,7 @@ dataSources:
           handler: handleStake
         - event: Withdraw(indexed address,uint256)
           handler: handleUnstake
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
   - kind: ethereum/contract
     name: RibbonAAVECoveredCallLiquidityGauge
     network: mainnet
@@ -494,8 +497,7 @@ dataSources:
           handler: handleStake
         - event: Withdraw(indexed address,uint256)
           handler: handleUnstake
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
   - kind: ethereum/contract
     name: RibbonstETHCoveredCallLiquidityGauge
     network: mainnet
@@ -524,8 +526,7 @@ dataSources:
           handler: handleStake
         - event: Withdraw(indexed address,uint256)
           handler: handleUnstake
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
   - kind: ethereum/contract
     name: RibbonETHCoveredCallLiquidityGauge
     network: mainnet
@@ -556,8 +557,7 @@ dataSources:
           handler: handleStake
         - event: Withdraw(indexed address,uint256)
           handler: handleUnstake
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
   - kind: ethereum/contract
     name: RibbonWBTCCoveredCallLiquidityGauge
     network: mainnet
@@ -588,8 +588,7 @@ dataSources:
           handler: handleStake
         - event: Withdraw(indexed address,uint256)
           handler: handleUnstake
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
   - kind: ethereum/contract
     name: RibbonRETHCoveredCallLiquidityGauge
     network: mainnet
@@ -620,8 +619,7 @@ dataSources:
           handler: handleStake
         - event: Withdraw(indexed address,uint256)
           handler: handleUnstake
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
   - kind: ethereum/contract
     name: RibbonVaultPauser
     network: mainnet
@@ -686,18 +684,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: DistributePremium(uint256,uint256[],address[],uint256)
           handler: handleDistributePremium
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonTreasuryVaultBAL
     network: mainnet
@@ -734,18 +733,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: DistributePremium(uint256,uint256[],address[],uint256)
           handler: handleDistributePremium
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonTreasuryVaultBADGER
     network: mainnet
@@ -782,18 +782,19 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: DistributePremium(uint256,uint256[],address[],uint256)
           handler: handleDistributePremium
+      callHandlers:
+        - function: rollToNextOption()
+          handler: handleRollToNextOption
   - kind: ethereum/contract
     name: RibbonTreasuryVaultSPELL
     network: mainnet
@@ -830,14 +831,12 @@ dataSources:
           handler: handleCloseShort
         - event: Deposit(indexed address,uint256,uint256)
           handler: handleDeposit
-        - event: InitiateWithdraw(indexed address,uint256,uint256)
-          handler: handleInitiateWithdraw
+
         - event: Withdraw(indexed address,uint256,uint256)
           handler: handleWithdraw
         - event: InstantWithdraw(indexed address,uint256,uint256)
           handler: handleInstantWithdraw
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
+
         - event: InitiateGnosisAuction(indexed address,indexed address,uint256,indexed address)
           handler: handleInitiateGnosisAuction
         - event: DistributePremium(uint256,uint256[],address[],uint256)

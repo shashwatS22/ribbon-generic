@@ -191,13 +191,9 @@ export const EPX_ADDRESS = Address.fromString(
   "0xaf41054c1487b0e5e2b9250c0332ecbce6ce9d71"
 );
 
-
 export const TRICRYPTO_LP_TOKEN = Address.fromString(
   "0xaF4dE8E872131AE328Ce21D909C74705d3Aaf452"
 );
-
-
-
 
 export const RIBBON_PLATFORM_ID = "ribbon";
 
@@ -210,7 +206,6 @@ export namespace PoolType {
   export const METAPOOL = "METAPOOL";
   export const BASEPOOL = "BASEPOOL";
 }
-
 
 export namespace RewardIntervalType {
   export const BLOCK = "BLOCK";
@@ -239,4 +234,10 @@ export const DEFAULT_ADMIN_FEE = BigInt.fromString("5000000000");
 export const MARGIN_POOL = Address.fromString(
   "0x5934807cC0654d46755eBd2848840b616256C6Ef"
 );
-export const ETH_CALL_V2_CONTRACT = Address.fromString("0x25751853Eab4D0eB3652B5eB6ecB102A2789644B");
+export const ETH_CALL_V2_CONTRACT = Address.fromString(
+  "0x25751853Eab4D0eB3652B5eB6ecB102A2789644B"
+);
+
+export const RBN_TOKEN = Address.fromString(
+  "0x6123b0049f904d730db3c36a31167d9d4121fa6b"
+);

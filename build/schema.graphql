@@ -53,6 +53,11 @@ type Token @entity {
 
   " Optional field to track the block number of the last token price "
   lastPriceBlockNumber: BigInt
+
+
+  _isOtoken: Boolean!
+
+  _vaultId: String!
 }
 
 enum RewardTokenType {
@@ -143,6 +148,11 @@ type Protocol @entity {
 
   " All pools that belong to this protocol "
   pools: [Pool!]! @derivedFrom(field: "protocol")
+
+  _poolIds: [String!]
+
+  _vaultIds: [String!]
+
 }
 
 ###############################
@@ -310,6 +320,10 @@ type Pool @entity {
 
   " Pool hourly snapshots "
   hourlySnapshots: [PoolHourlySnapshot!]! @derivedFrom(field: "pool")
+
+  _vault: String
+
+
 }
 
 type PoolDailySnapshot @entity {
@@ -367,7 +381,10 @@ type PoolDailySnapshot @entity {
   rewardTokenEmissionsAmount: [BigInt!]
 
   " Per-block reward token emission as of the current block normalized to a day, in USD value. This should be ideally calculated as the theoretical rate instead of the realized amount. "
-  rewardTokenEmissionsUSD: [BigDecimal!]
+  rewardTokenEmissionsUSD: [BigDecimal!],
+
+  
+
 }
 
 type PoolHourlySnapshot @entity {
@@ -439,4 +456,56 @@ type Account @entity {
 type ActiveAccount @entity {
   " { daily/hourly }-{ Address of the account }-{ Days/hours since Unix epoch } "
   id: ID!
+}
+
+type _Vault @entity{
+  " Smart Contract Address of the vault "
+  id: ID!
+
+  name: String!
+
+  symbol: String!
+
+  " Total balance of the locked underlying asset in the pool including the one in short position (totalBalance in case of ribbon) "
+  totalValueLocked: BigDecimal!
+
+  totalValueLockedUSD: BigDecimal!
+
+  currentOption: Token!
+
+  isPut: Boolean!
+  
+  currentOptionAuctionId: BigInt!
+
+  liquidityGauge: String!
+
+  managementFeesCollected: BigDecimal!
+
+  performanceFeeCollected:BigDecimal!
+
+  totalFeeCollected:BigDecimal!
+
+  decimals: Int!
+
+  optionsPremiumPricer: String!
+
+  options: [String!]
+
+  oTokenFactory: String!
+
+  marginPool: String!
+
+  gammaController: String!
+
+}
+
+type _Auction @entity{
+
+  id: ID!
+
+  optionToken: Token!
+
+  biddingToken: Token!
+
+  vault: _Vault!
 }
